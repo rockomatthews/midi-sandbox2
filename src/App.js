@@ -1,8 +1,10 @@
 import logo from './logo.svg';
 import './App.css';
+import ControlPanel from './components/ControlPanel';
 
 function App() {
   return (
+    <>
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
@@ -19,6 +21,10 @@ function App() {
         </a>
       </header>
     </div>
+    <div>
+      <ControlPanel />
+    </div>
+    </>
   );
 }
 
