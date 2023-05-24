@@ -15,7 +15,9 @@ const ControlPanel = () => {
   };
 
   const handleInstrumentChange = (event) => {
-    setSelectedInstrument(event.target.value);
+    if(event && event.target){
+      setSelectedInstrument(event.target.value);
+    }
   };
 
   // Functionality for onMIDISuccess and onMIDIFailure
@@ -40,10 +42,8 @@ const ControlPanel = () => {
         Play
       </Button>
       <Select
-        labelId="instrument-select-label"
         id="instrument-select"
         value={selectedInstrument}
-        label="Select Instrument"
         onChange={handleInstrumentChange}
         disabled={!isPlaying}
       >
