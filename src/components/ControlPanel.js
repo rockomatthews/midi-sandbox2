@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
 import { Button, Select, MenuItem } from '@mui/joy';
-// import Select from '@mui/material/Select';
-// import MenuItem from '@mui/material/MenuItem';
 import * as Tone from 'tone';
 
 const ControlPanel = () => {
@@ -19,7 +17,6 @@ const ControlPanel = () => {
       setSelectedInstrument(event.target.value);
     }
   };
-
   // Functionality for onMIDISuccess and onMIDIFailure
   const onMIDISuccess = (midiAccess) => {
     for (let input of midiAccess.inputs.values()) {
