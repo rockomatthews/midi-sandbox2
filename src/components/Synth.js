@@ -1,29 +1,35 @@
-// Synth.js
-import { useEffect, useRef } from 'react';
+import { Component } from 'react';
 import * as Tone from 'tone';
 
-const Synth = ({ midiDevice }) => {
-  const synthRef = useRef(new Tone.PolySynth(Tone.Synth).toDestination());
+class PolySynth extends Component {
+  constructor(props) {
+    super(props);
 
-  useEffect(() => {
-    if (midiDevice) {
-      midiDevice.onmidimessage = (message) => {
-        let [status, note, velocity] = message.data;
-        if (status === 144 && velocity > 0) {
-          console.log('Note on:', note); // Add logging here
-          synthRef.current.triggerAttack(Tone.Midi(note).toFrequency());
-        } else if (status === 128 || velocity === 0) {
-          console.log('Note off:', note); // Add logging here
-          synthRef.current.triggerRelease(Tone.Midi(note).toFrequency());
-        }
-      };
-    }
-    return () => {
-      if (midiDevice) midiDevice.onmidimessage = null;
+    this.state = {
+      synth: new Tone.PolySynth(Tone.Synth, {
+        oscillator: {
+          partials: [0, 2, 3, 4],
+        },
+      }),
     };
-  }, [midiDevice, synthRef]);
+  }
 
-  return null;
-};
+  render() {
+    return (
+      <div>
+        <piano
+          parent={document.querySelector("#content")}
+          polyphonic={true}
+          noteon={note => this.state.synth.triggerAttack(note.name)}
+          noteoff={note => this.state.synth.triggerRelease(note.name)}
+        />
+        <ui
+          tone={this.state.synth}
+          parent={document.querySelector("#content")}
+        />
+      </div>
+    );
+  }
+}
 
-export default Synth;
+export default PolySynth;
