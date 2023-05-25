@@ -1,35 +1,22 @@
-import { Component } from 'react';
+import React, { useEffect } from 'react';
 import * as Tone from 'tone';
 
-class PolySynth extends Component {
-  constructor(props) {
-    super(props);
+function PolySynth() {
+    useEffect(() => {
+        // create a polysynth
+        const synth = new Tone.PolySynth(Tone.Synth).toDestination();
+        // set the attributes across all voices
+        synth.set({ "detune": -1200 });
 
-    this.state = {
-      synth: new Tone.PolySynth(Tone.Synth, {
-        oscillator: {
-          partials: [0, 2, 3, 4],
-        },
-      }),
-    };
-  }
+        // play a chord
+        synth.triggerAttackRelease(["C4", "E4", "A4"], 1);
+    }, []);
 
-  render() {
     return (
-      <div>
-        <piano
-          parent={document.querySelector("#content")}
-          polyphonic={true}
-          noteon={note => this.state.synth.triggerAttack(note.name)}
-          noteoff={note => this.state.synth.triggerRelease(note.name)}
-        />
-        <ui
-          tone={this.state.synth}
-          parent={document.querySelector("#content")}
-        />
-      </div>
+        <div>
+            <h2>PolySynth Example</h2>
+        </div>
     );
-  }
 }
 
 export default PolySynth;
