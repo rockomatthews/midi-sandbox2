@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import * as Tone from 'tone';
-import { Button, Select, MenuItem } from '@mui/joy';
+import { Button, JoySelect, JoySelectMenu, JoySelectItem } from '@mui/joy';
 
 const MidiHandler = () => {
   const [midiDevices, setMidiDevices] = useState([]);
@@ -31,20 +31,20 @@ const MidiHandler = () => {
       <Button variant="contained" onClick={handleStart}>
         Start
       </Button>
-      <Dropdown
+      <JoySelect
         variant="filled"
         disableElevation
         open={midiDevices.length > 0}
         onClose={() => setMidiDevices([])}
       >
-        <DropdownMenu>
+        <JoySelectMenu>
           {midiDevices.map((device) => (
-            <DropdownItem key={device.id} onClick={() => handleSelectMidiDevice(device)}>
+            <JoySelectItem key={device.id} onClick={() => handleSelectMidiDevice(device)}>
               {device.name}
-            </DropdownItem>
+            </JoySelectItem>
           ))}
-        </DropdownMenu>
-      </Dropdown>
+        </JoySelectMenu>
+      </JoySelect>
       <Synth synth={synth} />
     </div>
   );
