@@ -1,35 +1,32 @@
-import { Component } from 'react';
-import * as Tone from 'tone';
+import React, { useState, useEffect } from 'react';
+import Tone from 'tone';
 
-class PolySynth extends Component {
-  constructor(props) {
-    super(props);
+const PolySynth = () => {
+  const [synth, setSynth] = useState(new Tone.PolySynth(Tone.Synth, {
+    oscillator: {
+      partials: [0, 2, 3, 4],
+    },
+  }));
 
-    this.state = {
-      synth: new Tone.PolySynth(Tone.Synth, {
-        oscillator: {
-          partials: [0, 2, 3, 4],
-        },
-      }),
-    };
-  }
+  useEffect(() => {
+    // This function will be called when the component mounts and whenever the state changes.
+    synth.start();
+  }, []);
 
-  render() {
-    return (
-      <div>
-        <piano
-          parent={document.querySelector("#content")}
-          polyphonic={true}
-          noteon={note => this.state.synth.triggerAttack(note.name)}
-          noteoff={note => this.state.synth.triggerRelease(note.name)}
-        />
-        <ui
-          tone={this.state.synth}
-          parent={document.querySelector("#content")}
-        />
-      </div>
-    );
-  }
-}
+  return (
+    <div>
+      <piano
+        parent={document.querySelector("#content")}
+        polyphonic={true}
+        noteon={note => synth.triggerAttack(note.name)}
+        noteoff={note => synth.triggerRelease(note.name)}
+      />
+      <ui
+        tone={synth}
+        parent={document.querySelector("#content")}
+      />
+    </div>
+  );
+};
 
 export default PolySynth;
