@@ -1,51 +1,53 @@
-import { useState, useEffect } from 'react';
-import * as Tone from 'tone';
-import { Button, MenuList, Menu, MenuItem } from '@mui/joy';
+import React, { useState, useEffect } from 'react';
+import * as tone from 'tone';
+import Synth from './Synth';
 
 const MidiHandler = () => {
-  const [midiDevices, setMidiDevices] = useState([]);
+  const [note, setNote] = useState(60);
+  const [volume, setVolume] = useState(1);
+
+  const synth = new Synth();
 
   useEffect(() => {
     // This function will be called when the component mounts and whenever the state changes.
-    navigator.mediaDevices.getUserMedia({ audio: true })
-      .then(stream => {
-        const midi = new Tone.Midi(stream);
-        midi.on('noteon', note => synth.triggerAttack(note.name));
-        midi.on('noteoff', note => synth.triggerRelease(note.name));
-        setMidiDevices(midi.getDevices());
-      })
-      .catch(err => console.error(err));
+    synth.start();
+    synth.volume.setValueAtTime(volume, 0);
+  }, [note, volume]);
+
+  useEffect(() => {
+    // This function will be called whenever a MIDI event is received.
+    const handleMidiEvent = (event) => {
+      synth.play(event.note);
+    };
+
+    // useWebMidi(handleMidiEvent);
+
+    return () => {
+      // useWebMidi(null);
+    };
   }, []);
 
-  const handleStart = () => {
-    setMidiDevices([]);
-    synth.start();
-  };
-
-  const handleSelectMidiDevice = (device) => {
-    synth.midiDevice = device;
-  };
+  useEffect(() => {
+    // This function will be called after the component mounts.
+    if (synth) {
+      synth.start();
+      synth.volume.setValueAtTime(volume, 0);
+    }
+  }, [synth]);
 
   return (
     <div>
-      <Button variant="contained" onClick={handleStart}>
-        Start
-      </Button>
-      <Menu
-        variant="filled"
-        disableElevation
-        open={midiDevices.length > 0}
-        onClose={() => setMidiDevices([])}
-      >
-        <MenuList>
-          {midiDevices.map((device) => (
-            <MenuItem key={device.id} onClick={() => handleSelectMidiDevice(device)}>
-              {device.name}
-            </MenuItem>
-          ))}
-        </MenuList>
-      </Menu>
-      <Synth synth={synth} />
+      <Slider
+        value={note}
+        onChange={(event) => setNote(event.target.value)}
+        label="Note"
+      />
+      <Slider
+        value={volume}
+        onChange={(event) => setVolume(event.target.value)}
+        label="Volume"
+      />
+      <Button onClick={() => synth.play(note)}>Play</Button>
     </div>
   );
 };
