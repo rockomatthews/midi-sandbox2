@@ -9,10 +9,10 @@ const MidiHandler = () => {
     // This function will be called when the component mounts and whenever the state changes.
     navigator.mediaDevices.getUserMedia({ audio: true })
       .then(stream => {
-        const midiIn = new Tone.MidiIn(stream);
-        midiIn.on('noteon', note => synth.triggerAttack(note.name));
-        midiIn.on('noteoff', note => synth.triggerRelease(note.name));
-        setMidiDevices(midiIn.getDevices());
+        const midi = new Tone.Midi(stream);
+        midi.on('noteon', note => synth.triggerAttack(note.name));
+        midi.on('noteoff', note => synth.triggerRelease(note.name));
+        setMidiDevices(midi.getDevices());
       })
       .catch(err => console.error(err));
   }, []);
