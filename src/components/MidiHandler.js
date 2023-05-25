@@ -1,26 +1,36 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable no-undef */
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import * as Tone from 'tone';
-import { Menu, MenuItem, MenuList } from '@mui/joy';
-import Synth from './Synth'
+import { Button, MenuList, Menu, MenuItem } from '@mui/joy';
 
 const MidiHandler = () => {
-  const [synth, setSynth] = useState(null);
+  const [midiDevices, setMidiDevices] = useState([]);
 
   useEffect(() => {
     // This function will be called when the component mounts and whenever the state changes.
     navigator.mediaDevices.getUserMedia({ audio: true })
       .then(stream => {
-        const midi = new Tone.Midi(stream);
-        midi.on('noteon', note => synth.triggerAttack(note.name));
-        midi.on('noteoff', note => synth.triggerRelease(note.name));
+        const midiIn = new Tone.MidiIn(stream);
+        midiIn.on('noteon', note => synth.triggerAttack(note.name));
+        midiIn.on('noteoff', note => synth.triggerRelease(note.name));
+        setMidiDevices(midiIn.getDevices());
       })
       .catch(err => console.error(err));
   }, []);
 
+  const handleStart = () => {
+    setMidiDevices([]);
+    synth.start();
+  };
+
+  const handleSelectMidiDevice = (device) => {
+    synth.midiDevice = device;
+  };
+
   return (
     <div>
+      <Button variant="contained" onClick={handleStart}>
+        Start
+      </Button>
       <Menu
         variant="filled"
         disableElevation
@@ -29,11 +39,7 @@ const MidiHandler = () => {
       >
         <MenuList>
           {midiDevices.map((device) => (
-            <MenuItem key={device.id} onClick={() => setSynth(new Tone.PolySynth(Tone.Synth, {
-              oscillator: {
-                partials: [0, 2, 3, 4],
-              },
-            }))}>
+            <MenuItem key={device.id} onClick={() => handleSelectMidiDevice(device)}>
               {device.name}
             </MenuItem>
           ))}

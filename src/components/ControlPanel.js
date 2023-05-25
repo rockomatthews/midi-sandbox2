@@ -1,10 +1,10 @@
 import MidiHandler from './MidiHandler';
-import Synth from './Synth';
+import FirstSynth from './Synth';
 
 const ControlPanel = () => {
   return (
     <div>
-      <MidiHandler synth={Synth} />
+      <MidiHandler synth={FirstSynth} />
     </div>
   );
 };

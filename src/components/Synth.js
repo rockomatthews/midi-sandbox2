@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import * as Tone from 'tone';
 
-const PolySynth = () => {
+const FirstSynth = () => {
   const [synth, setSynth] = useState(new Tone.PolySynth(Tone.Synth, {
     oscillator: {
       partials: [0, 2, 3, 4],
@@ -29,4 +29,4 @@ const PolySynth = () => {
   );
 };
 
-export default PolySynth;
+export default FirstSynth;
