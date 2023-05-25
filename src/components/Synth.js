@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Tone from 'tone';
+import * as Tone from 'tone';
 
 const PolySynth = () => {
   const [synth, setSynth] = useState(new Tone.PolySynth(Tone.Synth, {
